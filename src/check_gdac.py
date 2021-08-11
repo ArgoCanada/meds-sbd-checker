@@ -15,11 +15,20 @@ items = [] # list of file dicts
 page_token = None # says whether or not we have reached the last page
 sfields = 'id, name, createdTime' # string list of fields to fetch
 fields = sfields.split(', ') # python list of fields
+datestr = '2021-08-04T12:00:00' # filter datestring
 
 # get all files in sbd folder, break when last page is reached, but page_token
 # is None to start and end so can't build condition on that
 while True:
-    results = service.files().list(spaces='drive', fields='nextPageToken, files({})'.format(sfields), pageToken=page_token).execute()
+    # get files
+    results = service.files().list(
+        q="createdTime > '{}'".format(datestr),
+        spaces='drive',
+        fields='nextPageToken, files({})'.format(sfields),
+        pageToken=page_token,
+    ).execute()
+
+    # append items
     items = items + results.get('files', [])
     page_token = results.get('nextPageToken', None)
     if page_token is None:
