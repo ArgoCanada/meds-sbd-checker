@@ -3,14 +3,17 @@ import unittest
 import os
 from datetime import datetime
 
-from oauth2client.service_account import ServiceAccountCredentials
-from google.oauth2.credentials import Credentials
 from checker import source
 
 
 class TestSource(unittest.TestCase):
 
     def setUp(self) -> None:
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        from google.auth.transport.requests import Request
+        from google.oauth2.credentials import Credentials
+        from oauth2client.service_account import ServiceAccountCredentials
+
         # can use a service account credential for the Drive API
         json_file = [f for f in os.listdir('.') if f.endswith('-drive.json')]
         if not json_file:
@@ -26,9 +29,6 @@ class TestSource(unittest.TestCase):
         # gmail API needs a user authorization because it accesses
         # an actual email account which in most cases is highly
         # sensitive
-        from google_auth_oauthlib.flow import InstalledAppFlow
-        from google.auth.transport.requests import Request
-        from google.oauth2.credentials import Credentials
 
         # https://developers.google.com/gmail/api/quickstart/python
         scopes = ['https://www.googleapis.com/auth/gmail.readonly']
