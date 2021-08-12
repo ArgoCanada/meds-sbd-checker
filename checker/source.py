@@ -107,6 +107,39 @@ class GoogleDriveDataSource(RawFloatDataSource):
 
 
 class GmailDataSource(RawFloatDataSource):
+    """
+    Data source based on a Gmail account whose attachments are
+    incoming files.
+
+    :param credentials: Credentials that allow access to a user's mailbox
+    :param max_messages: The maximum number of messages to check without
+        aborting. This allows avoiding an infinite loop if there are
+        no attachments.
+    :param args: Further arguments to the /users/../messages/list endpoint.
+    """
+
+    class LazyAttachment:
+        """Lazy file-like object to avoid downloading an attachment unnecessarily"""
+
+        def __init__(self, service, message_id, attachment_id):
+            self._service = service
+            self._message_id = message_id
+            self._attachment_id = attachment_id
+            self._buffer = None
+        
+        def read(self, size=None):
+            if self._buffer is None:
+                attachment = self._service.users().messages().attachments().get(
+                    userId='me',
+                    messageId=self._message_id,
+                    id=self._attachment_id
+                ).execute()
+
+                data_base64 = attachment['data']
+                data_bytes = base64.urlsafe_b64decode(data_base64)
+                self._buffer = io.BytesIO(data_bytes)
+
+            return self._buffer.read(size)
 
     def __init__(self, credentials, max_messages=1000, args=None):
         self._service = googleapiclient.discovery.build('gmail', 'v1', credentials=credentials)
@@ -137,15 +170,13 @@ class GmailDataSource(RawFloatDataSource):
                 for part in message['payload']['parts']:
                     if 'attachmentId' in part['body']:
                         name = part['filename']
-                        attachment = self._service.users().messages().attachments().get(
-                            userId='me',
-                            messageId=msg_item['id'],
-                            id=part['body']['attachmentId']
-                        ).execute()
+                        lazy_file = GmailDataSource.LazyAttachment(
+                            self._service,
+                            msg_item['id'],
+                            part['body']['attachmentId']
+                        )
 
-                        data_base64 = attachment['data']
-                        data_bytes = base64.urlsafe_b64decode(data_base64)
-                        yield name, time, io.BytesIO(data_bytes)
+                        yield name, time, lazy_file
 
             # get more messages if we're not done iterating
             page_token = messages.get('nextPageToken', None)
