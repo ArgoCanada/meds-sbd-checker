@@ -41,7 +41,7 @@ class TestSource(unittest.TestCase):
             self.assertLessEqual(n_files, 1)
             self.assertEqual(name, 'test_file.txt')
             self.assertIsInstance(time, datetime)
-            self.assertTrue(f.read(), b'test content\r\n')
+            self.assertEqual(f.read(), b'test content\r\n')
 
 
 if __name__ == '__main__':
