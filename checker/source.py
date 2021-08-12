@@ -73,7 +73,9 @@ class GoogleDriveDataSource(RawFloatDataSource):
             # iterate through items
             for item in results.get('files', []):
                 time = datetime.strptime(item['createdTime'], '%Y-%m-%dT%H:%M:%S.%fZ')
-                yield item['name'], time, io.BytesIO(b'')
+                # this will download the file all at once which is OK for what we need
+                download_req = self._service.files().get_media(fileId=item['id'])
+                yield item['name'], time, io.BytesIO(download_req.execute())
 
             # get more items if the user hasn't stopped iterating yet
             page_token = results.get('nextPageToken', None)

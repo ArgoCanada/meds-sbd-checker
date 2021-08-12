@@ -18,7 +18,7 @@ class TestSource(unittest.TestCase):
     def test_drive(self):
         # @paleolimbot set up a dummy shared folder for this test:
         # https://drive.google.com/drive/folders/1bhGbTy9G7HJnSEAsHS3p9CNwYGwvYdAY
-        # it has exactly one file named test_file.txt with the content b'test content\n'
+        # it has exactly one file named test_file.txt with the content b'test content\r\n'
         dummy_id = '1bhGbTy9G7HJnSEAsHS3p9CNwYGwvYdAY'
 
         # dev environment will have some-file.json, but cloud might have
@@ -41,7 +41,7 @@ class TestSource(unittest.TestCase):
             self.assertLessEqual(n_files, 1)
             self.assertEqual(name, 'test_file.txt')
             self.assertIsInstance(time, datetime)
-            self.assertEqual(f.read(), b'')
+            self.assertTrue(f.read(), b'test content\r\n')
 
 
 if __name__ == '__main__':
