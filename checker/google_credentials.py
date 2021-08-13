@@ -13,7 +13,7 @@ class GoogleCredentialHelper:
     quickly. This class contains the helpers needed to generate
     tokens for development (where tokens are JSON files
     generated and saved locally) and for GitHub actions
-    (where tokens are JSON stored in environment variables 
+    (where tokens are JSON stored in environment variables
     set using repository secrets).
     """
 
@@ -69,7 +69,7 @@ class GoogleCredentialHelper:
             creds = Credentials.from_authorized_user_info(content, scopes)
         except GoogleCredentialHelper.NoSuchCredentialError:
             pass
-        
+
         if not creds or not creds.valid:  # pragma: no cover
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
@@ -80,7 +80,7 @@ class GoogleCredentialHelper:
                 from google_auth_oauthlib.flow import InstalledAppFlow
                 client_secret_file = 'gmail-client-secret.json'
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    client_secret_file, 
+                    client_secret_file,
                     scopes
                 )
 
@@ -88,7 +88,7 @@ class GoogleCredentialHelper:
                 # redirect URL for this application (set in the Google Cloud Console
                 # under 'Oauth Authorization Screen Setup') is http://localhost:53844/
                 creds = flow.run_local_server(port=53844)
-        
+
             # only update the credentials file interactively (no way to
             # keep this information securely up-to-date otherwise)
             if interactive:
@@ -96,7 +96,7 @@ class GoogleCredentialHelper:
                     token.write(creds.to_json())
             else:
                 raise GoogleCredentialHelper.NoSuchCredentialError()
-        
+
         return creds
 
     @staticmethod
@@ -104,7 +104,7 @@ class GoogleCredentialHelper:
         file_or_content = os.getenv(env_var)
         if file_or_content is None:
             file_or_content = default_file
-        
+
         try:
             try:
                 with open(file_or_content, 'rb') as f:

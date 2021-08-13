@@ -51,20 +51,19 @@ class GoogleDriveDataSource(RawFloatDataSource):
             self._service = service
             self._file_id = file_id
             self._buffer = None
-        
+
         def read(self, size=None):
             if self._buffer is None:
                 # this will download the file all at once which is OK for now
                 req = self._service.files().get_media(fileId=self._file_id)
                 self._buffer = io.BytesIO(req.execute())
             return self._buffer.read(size)
-        
+
         def __enter__(self):
             return self
-        
+
         def __exit__(self, *execinfo):
             pass
-                
 
     def __init__(self, folder_id, credentials=None, args=None) -> None:
         self._service = googleapiclient.discovery.build('drive', 'v3', credentials=credentials)
@@ -76,10 +75,10 @@ class GoogleDriveDataSource(RawFloatDataSource):
             q = q_folder_id
         else:
             q = f"({q_folder_id}) and ({self._args['q']})"
-        
+
         self._args['q'] = q
-    
-    def __iter__(self) -> Iterable[Tuple[str, datetime, BinaryIO]]:    
+
+    def __iter__(self) -> Iterable[Tuple[str, datetime, BinaryIO]]:
         page_token = None  # says whether or not we have reached the last page
 
         # get all files in folder, break when last page is reached, but page_token
@@ -126,7 +125,7 @@ class GmailDataSource(RawFloatDataSource):
             self._message_id = message_id
             self._attachment_id = attachment_id
             self._buffer = None
-        
+
         def read(self, size=None):
             if self._buffer is None:
                 attachment = self._service.users().messages().attachments().get(

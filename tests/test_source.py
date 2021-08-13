@@ -14,7 +14,7 @@ class TestSource(unittest.TestCase):
             self.assertIsInstance(name, str)
             self.assertIsInstance(time, datetime)
             self.assertTrue(hasattr(f, 'read'))
-    
+
     def test_drive(self):
         # @paleolimbot set up a dummy shared folder for this test:
         # https://drive.google.com/drive/folders/1bhGbTy9G7HJnSEAsHS3p9CNwYGwvYdAY
@@ -29,10 +29,10 @@ class TestSource(unittest.TestCase):
             self.assertEqual(name, 'test_file.txt')
             self.assertIsInstance(time, datetime)
             self.assertEqual(f.read(), b'test content\r\n')
-        
+
     def test_gmail(self):
         cred = GoogleCredentialHelper.gmail_authorized_user_token()
-        src = source.GmailDataSource(credentials=cred)    
+        src = source.GmailDataSource(credentials=cred)
         n_files = 0
         for name, time, f in src:
             n_files +=1
@@ -40,7 +40,7 @@ class TestSource(unittest.TestCase):
             self.assertRegex(name, r'.sbd$')
             self.assertIsInstance(time, datetime)
             self.assertEqual(len(f.read()), 300)
-            
+
             if n_files >= 5:
                 break
 
