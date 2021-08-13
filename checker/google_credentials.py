@@ -70,7 +70,7 @@ class GoogleCredentialHelper:
         except GoogleCredentialHelper.NoSuchCredentialError:
             pass
         
-        if not creds or not creds.valid:
+        if not creds or not creds.valid:  # pragma: no cover
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             elif interactive:
