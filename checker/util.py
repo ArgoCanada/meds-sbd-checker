@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 
 today = datetime.datetime.today()
-delta = datetime.datetime.timedelta(days=1)
+delta = datetime.timedelta(days=1)
 
 def fetch_sbd(tlim=(today-delta, today), days_ago=None, ndays=None):
     '''
