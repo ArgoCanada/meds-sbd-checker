@@ -33,6 +33,9 @@ def expected_profiles(tlim=(today-delta, today), days_ago=None, ndays=None):
     a new profile within a specified date range. 
 
     Args: 
+        - tlim (tuple): tuple of two datestrings or datetimes used to select files
+        - days_ago (float): number of days ago to get files, can be float
+        - ndays (float): number of days from `days_ago` to get files
     '''
 
     return None
