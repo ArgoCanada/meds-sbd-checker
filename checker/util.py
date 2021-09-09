@@ -43,6 +43,24 @@ def get_last_profiles(index):
 
     return recent_profiles
 
+
+def get_next_profiles(index, cycle_time):
+    '''
+    Function that will take each profile in a given index and give the date
+    of the next cycle given a cycle time in hours. The cycle_time argument
+    is mandatory as some floats may operatate on different time periods to
+    accomplish different goals (see Johnson & Bif 2021), however a 10-day
+    period (240 hours) is typical. 
+
+    Args:
+        index (pandas.DataFrame): subset of the Argo global index
+        cycle_time (float): period in hours of the cycle time, typically
+        10 days (240 hours)
+
+    Returns:
+        Original index with an extra column for next profile date
+    '''
+
 def expected_profiles(index, tlim=(today-delta, today)):
     '''
     Function that looks at the global Argo index for a given DAC (note - set
