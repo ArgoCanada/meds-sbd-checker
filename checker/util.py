@@ -58,9 +58,9 @@ def last_profiles(index, n=1):
 
     keep_index = []
     for i in range(n):
-        keep_index = keep_index + [(index[index.wmo == wmo].date == index[index.wmo == wmo].date.max()).index[0] for wmo in index.wmo]
-        index = index[~keep_index]
-    recent_profiles = index_copy[keep_index]
+        keep_index = keep_index + [(index[index.wmo == wmo].date == index[index.wmo == wmo].date.max()).index[0] for wmo in index.wmo.unique()]
+        index = index.drop(keep_index)
+    recent_profiles = index_copy.loc[keep_index]
 
     return recent_profiles
 
@@ -109,6 +109,6 @@ def expected_profiles(index, tlim=(today-delta, today)):
         index = next_profiles(index)
 
     tlim_index = np.logical_and(index.date > tlim[0], index.date < tlim[1])
-    expected_profiles
+    expected_index = index[:][tlim_index]
 
-    return None
+    return expected_index
