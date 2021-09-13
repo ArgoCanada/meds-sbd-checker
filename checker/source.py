@@ -142,7 +142,7 @@ class GmailDataSource(RawFloatDataSource):
 
     def __init__(self, credentials, max_messages=1000, args=None):
         self._service = googleapiclient.discovery.build('gmail', 'v1', credentials=credentials)
-        self._args = {} if args is None else {}
+        self._args = {} if args is None else args
         self._max_messages = max_messages
 
     def __iter__(self) -> Iterable[Tuple[str, datetime, BinaryIO]]:
