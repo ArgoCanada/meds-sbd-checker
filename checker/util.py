@@ -1,12 +1,9 @@
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
-import datetime
 
-today = datetime.datetime.today()
-delta = datetime.timedelta(days=1)
+today = pd.Timestamp('today')
+delta = pd.Timedelta(days=1)
 
 def fetch_sbd(tlim=(today-delta, today)):
     '''
@@ -22,21 +19,6 @@ def fetch_sbd(tlim=(today-delta, today)):
     '''
 
     return None
-
-def parse_dates(index):
-    '''
-    Function to parse dates in the Argo global index. It is not recommended to
-    perform this operation on the entire index.
-
-    Args:
-        index (pandas.DataFrame): Argo global, bio, or synthetic index
-    
-    Returns:
-        A copy of the index where the column "date" has been populated with
-        python datetime.datetime objects rather than large integer dates
-    '''
-
-    ### argopandas does this already
 
 def last_profiles(index, n=1):
     '''
